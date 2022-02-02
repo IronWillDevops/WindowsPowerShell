@@ -1,6 +1,6 @@
 # Задаем название контейнера
-$City = "NSK"
-$CityRu="Новосибирск"
+$City = "KHA"
+$CityRu="Харьков"
 $DomainDN=(Get-ADDomain).DistinguishedName
 $OUs = @(
 "Admins",
