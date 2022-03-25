@@ -1,0 +1,38 @@
+$UWPApps = @(
+"Microsoft.Microsoft3DViewer"
+"Microsoft.MicrosoftOfficeHub"
+"Microsoft.MicrosoftSolitaireCollection"
+"Microsoft.MicrosoftStickyNotes"
+"Microsoft.MixedReality.Portal"
+"Microsoft.MSPaint"
+"Microsoft.Office.OneNote"
+"Microsoft.People"
+"Microsoft.ScreenSketch"
+"Microsoft.Wallet"
+"Microsoft.SkypeApp"
+"microsoft.windowscommunicationsapps"
+"Microsoft.WindowsFeedbackHub"
+"Microsoft.WindowsMaps"
+"Microsoft.WindowsSoundRecorder"
+"Microsoft.Xbox.TCUI"
+"Microsoft.XboxApp"
+"Microsoft.XboxGameOverlay"
+"Microsoft.XboxGamingOverlay"
+"Microsoft.XboxIdentityProvider"
+"Microsoft.XboxSpeechToTextOverlay"
+"Microsoft.YourPhone"
+"Microsoft.ZuneMusic"
+"Microsoft.ZuneVideo"
+"Microsoft.BingNews"
+"Microsoft.BingWeather"
+"Microsoft.GamingApp"
+"Microsoft.GetHelp"
+"Microsoft.Getstarted"
+"MicrosoftTeams"
+"Microsoft.MicrosoftEdge.Stable"
+"Microsoft.Todos"
+)
+foreach ($UWPApp in $UWPApps) {
+Get-AppxPackage -Name $UWPApp -AllUsers | Remove-AppxPackage
+Get-AppXProvisionedPackage -Online | Where-Object DisplayName -eq $UWPApp | Remove-AppxProvisionedPackage -Online
+}
