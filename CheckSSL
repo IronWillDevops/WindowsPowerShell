@@ -1,5 +1,8 @@
 $minCertAge = 30
 $timeoutMs = 10000
+$SMTPserver = mx1.server.com
+$Form = from@example.com
+$To = to@example.com 
 $sites = @(
 "https://site.com/",
 "https://site1.com/"
@@ -25,6 +28,6 @@ else
 }
 }
 if($MsgOnUpdateSSL){
-Send-MailMessage -From noreply@itkha.com -To alert@itkha.com -Subject "Продлить сертификат" -body $MsgOnUpdateSSL -SmtpServer mx1.itkha.com -Encoding UTF8
+Send-MailMessage -From $Form -To $To -Subject "Продлить сертификат" -body $MsgOnUpdateSSL -SmtpServer $SMTPserver-Encoding UTF8
 }
 
