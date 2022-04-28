@@ -1,0 +1,30 @@
+$minCertAge = 30
+$timeoutMs = 10000
+$sites = @(
+"https://site.com/",
+"https://site1.com/"
+)
+$MsgOnUpdateSSL = ""
+# Отключить проверку корректности сертификата
+[Net.ServicePointManager]::ServerCertificateValidationCallback = {$true}
+foreach ($site in $sites)
+{
+$req = [Net.HttpWebRequest]::Create($site)
+$req.Timeout = $timeoutMs
+try {$req.GetResponse() |Out-Null} catch {}
+[datetime]$certExpDate = $req.ServicePoint.Certificate.GetExpirationDateString()
+[int]$certExpiresIn = ($certExpDate - $(get-date)).Days
+$certName = $req.ServicePoint.Certificate.GetName()
+$certThumbprint = $req.ServicePoint.Certificate.GetCertHashString()
+$certEffectiveDate = $req.ServicePoint.Certificate.GetEffectiveDateString()
+$certIssuer = $req.ServicePoint.Certificate.GetIssuerName()
+if ($certExpiresIn -gt $minCertAge)
+{}
+else
+{$MsgOnUpdateSSL+="Сертификат для сайта $site истечет через $certExpiresIn дней.`nПодробности:`n`nCert name: $certName`nCert thumbprint: $certThumbprint`nCert effective date: $certEffectiveDate`nCert issuer: $certIssuer`n`n___________________________________`n"
+}
+}
+if($MsgOnUpdateSSL){
+Send-MailMessage -From noreply@itkha.com -To alert@itkha.com -Subject "Продлить сертификат" -body $MsgOnUpdateSSL -SmtpServer mx1.itkha.com -Encoding UTF8
+}
+
