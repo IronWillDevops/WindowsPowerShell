@@ -1,4 +1,4 @@
-$Sender = "Administrator From@itkha.com"
+$Sender = "Administrator From@example.com"
 $Subject = 'Внимание! Скоро истекает срок действия Вашего пароля!'
 $BodyTxt1 = 'Срок действия Вашего пароля для<b>'
 $BodyTxt2 = '</b>заканчивается через <b>'
