@@ -16,6 +16,7 @@ $EmailBody = $BodyTxt1, $user.name, $BodyTxt2, $lastdays, $BodyTxt3 -join ' '
 $encoding = [System.Text.Encoding]::UTF8
    
    Write-Output $user.EmailAddress
+   if($user.EmailAddress){
 Send-MailMessage -To $user.EmailAddress -From $Sender -SmtpServer $smtpserver -Subject $Subject -Body $EmailBody -BodyAsHtml -Encoding $encoding
-}
+}}
 }
