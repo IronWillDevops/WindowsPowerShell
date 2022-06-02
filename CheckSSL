@@ -28,6 +28,6 @@ else
 }
 }
 if($MsgOnUpdateSSL){
-Send-MailMessage -From $Form -To $To -Subject "Продлить сертификат" -body $MsgOnUpdateSSL -SmtpServer $SMTPserver-Encoding UTF8
+Send-MailMessage -From $Form -To $To -Subject "Продлить сертификат" -body $MsgOnUpdateSSL -SmtpServer $SMTPserver -Encoding UTF8
 }
 
