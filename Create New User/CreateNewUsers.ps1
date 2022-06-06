@@ -27,11 +27,11 @@ return $newPassword
 
 
 Import-Csv $path -Delimiter ';' | ForEach-Object {
-$givenName = $_.givenName 
-$sn = $_.sn
-$displayName = $givenName + " " +$sn
+$givenName = $_.FirstName 
+$sn = $_.LastName
+$displayName = $sn + ", " +$givenName
 $sAMAccountName = $_.sAMAccountName
-$mail= $sn  + '.'+$givenName +$emailDomain
+$mail= $givenName  + '.'+$sn +$emailDomain
 $Password = GenerateDomainPassword(10)
 $telephoneNumber = $_.telephoneNumber
 $department = $_.department
@@ -41,6 +41,7 @@ New-ADUser `
 -GivenName $givenName `
 -Surname $sn `
 -DisplayName $displayName `
+-Description $sAMAccountName `
 -SamAccountName $sAMAccountName `
 -State $defaultMailQuota `
 -EmailAddress $mail `
@@ -51,7 +52,7 @@ New-ADUser `
 -ChangePasswordAtLogon $userMustHaveChangedPassword `
 -Enabled $lockAccount ` 
 Set-ADUser -Identity $sAMAccountName -Replace @{telephoneNumber=$telephoneNumber}
-Set-ADUser -Identity $sAMAccountName -Replace @{userPrincipalName="$sAMAccountName$emailDomain"}
+Set-ADUser -Identity $sAMAccountName -Replace @{userPrincipalName="$mail"}
 Set-ADUser -Identity $sAMAccountName -Replace @{otherMailbox=$mail}
 Set-ADUser -Identity $sAMAccountName -Replace @{st=$defaultMailQuota}
 
@@ -59,6 +60,5 @@ Set-ADUser -Identity $sAMAccountName -Replace @{st=$defaultMailQuota}
 
 echo "User Created Login: $sAMAccountName Password: $Password"
 }
-
 
 
