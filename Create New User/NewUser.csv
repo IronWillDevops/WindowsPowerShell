@@ -1,2 +1,2 @@
-givenName;sn;sAMAccountName;telephoneNumber;department;title
-Surname;Name;UserID;Telepfone;department;title
+FirstName;LastName;sAMAccountName;telephoneNumber;department;title
+FirstName;LastName;sAMAccountName;telephoneNumber;department;title
