@@ -27,8 +27,8 @@ return $newPassword
 
 
 Import-Csv $path -Delimiter ';' | ForEach-Object {
-$givenName = $_.FirstName 
-$sn = $_.LastName
+$givenName = $_.givenName 
+$sn = $_.sn
 $displayName = $sn + ", " +$givenName
 $sAMAccountName = $_.sAMAccountName
 $mail= $givenName  + '.'+$sn +$emailDomain
