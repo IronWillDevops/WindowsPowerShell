@@ -1,4 +1,4 @@
-$path=".\NewUser.csv"
+$path=".\NewUsers.csv"
 $emailDomain="@domain.com"
 $company ="domain.com"
 $defaultOU = "OU=Test,OU=Domain Users,DC=domain,DC=com"
@@ -51,7 +51,7 @@ New-ADUser `
 -AccountPassword (ConvertTo-SecureString $Password -AsPlainText -force) `
 -ChangePasswordAtLogon $userMustHaveChangedPassword `
 -Enabled $lockAccount ` 
-Set-ADUser -Identity $sAMAccountName -Replace @{telephoneNumber=$telephoneNumber}
+Set-ADUser -Identity $sAMAccountName -Replace @{mobile=$telephoneNumber}
 Set-ADUser -Identity $sAMAccountName -Replace @{userPrincipalName="$mail"}
 Set-ADUser -Identity $sAMAccountName -Replace @{otherMailbox=$mail}
 Set-ADUser -Identity $sAMAccountName -Replace @{st=$defaultMailQuota}
