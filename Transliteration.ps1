@@ -1,5 +1,7 @@
 Param (
+[Parameter(Mandatory=$true, Position=1)]
 [string]$Text,
+[Parameter(Mandatory=$false, Position=2)]
 [string]$Language = "UA"
 )
 
