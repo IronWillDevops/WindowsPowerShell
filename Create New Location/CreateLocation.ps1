@@ -12,8 +12,8 @@ $OUs = @(
 Import-Module ActiveDirectory
 
 # Создаем структуру OU в Active Directory
-New-ADOrganizationalUnit -Name "$country" 
-$newOU=New-ADOrganizationalUnit -Name "$city" -Path "OU=$country,DC=example,DC=domain" -Description "$descriptioncity" -PassThru
+New-ADOrganizationalUnit -Name "$sites" 
+$newOU=New-ADOrganizationalUnit -Name "$city" -Path "OU=$sites,DC=itkha,DC=domain" -Description "$descriptioncity" -PassThru
 
 Write-Output $newOU
 
