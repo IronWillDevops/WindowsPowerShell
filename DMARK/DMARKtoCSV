@@ -1,0 +1,59 @@
+# Укажите путь к папке с ZIP-архивами и папку для извлечения отчетов
+$zipFolder = "C:\dmarc\archive"
+$unzipFolder = "C:\dmarc\unzip"
+$outputFolder = "C:\dmarc\result"
+if (-not (Test-Path $zipFolder)) {
+New-Item -Path "C:\dmarc\archive" -ItemType Directory}
+if (-not (Test-Path $unzipFolder)) {
+New-Item -Path "C:\dmarc\unzip" -ItemType Directory}
+if (-not (Test-Path $outputFolder)) {
+New-Item -Path "C:\dmarc\result" -ItemType Directory}
+
+# Создаем папку для извлеченных файлов, если она не существует
+New-Item -ItemType Directory -Force -Path $outputFolder
+
+# Получаем список ZIP-архивов в папке
+$zipFiles = Get-ChildItem -Path $zipFolder -Filter *.zip
+
+# Перебираем каждый ZIP-архив
+foreach ($zipFile in $zipFiles) {
+    # Извлекаем файлы из ZIP-архива в папку для извлечения
+    Expand-Archive -Path $zipFile.FullName -DestinationPath $unzipFolder
+    
+    # Переходим в папку с извлеченными файлами
+    Set-Location $unzipFolder
+
+    # Получаем список XML файлов в папке
+    $xmlFiles = Get-ChildItem -Path $unzipFolder -Filter *.xml
+
+    # Создаем CSV файл для записи данных
+    $outputCsv = "dmarc_reports.csv"
+    $outputCsvPath = Join-Path -Path $outputFolder -ChildPath $outputCsv
+
+    # Создаем заголовок CSV файла
+    "Organization Name,Email,Report ID,Date Begin,Date End,Source IP,Count,Disposition,DKIM,SPF,Header From,SPF Domain,SPF Result" | Out-File -FilePath $outputCsvPath -Encoding utf8 -Force
+
+    # Добавляем данные из каждого XML файла в общий CSV файл
+    foreach ($xmlFile in $xmlFiles) {
+        $xmlContent = [xml](Get-Content $xmlFile.FullName)
+        $organizationName = $xmlContent.feedback.report_metadata.org_name
+        $email = $xmlContent.feedback.report_metadata.email
+        $reportId = $xmlContent.feedback.report_metadata.report_id
+        $dateBegin = $xmlContent.feedback.report_metadata.date_range.begin
+        $dateEnd = $xmlContent.feedback.report_metadata.date_range.end
+        $sourceIp = $xmlContent.feedback.record.row.source_ip
+        $count = $xmlContent.feedback.record.row.count
+        $disposition = $xmlContent.feedback.record.row.policy_evaluated.disposition
+        $dkim = $xmlContent.feedback.record.row.policy_evaluated.dkim
+        $spf = $xmlContent.feedback.record.row.policy_evaluated.spf
+        $headerFrom = $xmlContent.feedback.record.identifiers.header_from
+        $spfDomain = $xmlContent.feedback.record.auth_results.spf.domain
+        $spfResult = $xmlContent.feedback.record.auth_results.spf.result
+
+        # Записываем данные в CSV файл
+        "$organizationName,$email,$reportId,$dateBegin,$dateEnd,$sourceIp,$count,$disposition,$dkim,$spf,$headerFrom,$spfDomain,$spfResult" | Out-File -FilePath $outputCsvPath -Append -Encoding utf8
+    }
+}
+    # Удаляем извлеченные файлы после обработки ZIP-архива
+    Remove-Item -Path $unzipFolder\* -Force
+Write-Host "Отчеты DMARC успешно собраны в CSV файл: $outputCsvPath"
