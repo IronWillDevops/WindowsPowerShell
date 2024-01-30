@@ -1,16 +1,17 @@
 # Укажите путь к папке с ZIP-архивами и папку для извлечения отчетов
-$zipFolder = "C:\dmarc\archive"
-$unzipFolder = "C:\dmarc\unzip"
-$outputFolder = "C:\dmarc\result"
-if (-not (Test-Path $zipFolder)) {
-New-Item -Path "C:\dmarc\archive" -ItemType Directory}
-if (-not (Test-Path $unzipFolder)) {
-New-Item -Path "C:\dmarc\unzip" -ItemType Directory}
-if (-not (Test-Path $outputFolder)) {
-New-Item -Path "C:\dmarc\result" -ItemType Directory}
+$zipFolder = "C:\Dmark\archive"
+$outputFolder="C:\Dmark\result"
+
+
+
+$outputXML="$outputFolder\xml"
 
 # Создаем папку для извлеченных файлов, если она не существует
-New-Item -ItemType Directory -Force -Path $outputFolder
+New-Item -Path "$outputFolder" -ItemType Directory -Force
+New-Item -Path "$outputXML" -ItemType Directory -Force
+
+
+
 
 # Получаем список ZIP-архивов в папке
 $zipFiles = Get-ChildItem -Path $zipFolder -Filter *.zip
@@ -18,13 +19,13 @@ $zipFiles = Get-ChildItem -Path $zipFolder -Filter *.zip
 # Перебираем каждый ZIP-архив
 foreach ($zipFile in $zipFiles) {
     # Извлекаем файлы из ZIP-архива в папку для извлечения
-    Expand-Archive -Path $zipFile.FullName -DestinationPath $unzipFolder
+    Expand-Archive -Path $zipFile.FullName -DestinationPath $outputXML -Force
     
     # Переходим в папку с извлеченными файлами
-    Set-Location $unzipFolder
+    Set-Location $outputXML
 
-    # Получаем список XML файлов в папке
-    $xmlFiles = Get-ChildItem -Path $unzipFolder -Filter *.xml
+    # Получаем список XML файлов в outputXML
+    $xmlFiles = Get-ChildItem -Path $outputXML -Filter *.xml
 
     # Создаем CSV файл для записи данных
     $outputCsv = "dmarc_reports.csv"
@@ -55,5 +56,5 @@ foreach ($zipFile in $zipFiles) {
     }
 }
     # Удаляем извлеченные файлы после обработки ZIP-архива
-    Remove-Item -Path $unzipFolder\* -Force
+    
 Write-Host "Отчеты DMARC успешно собраны в CSV файл: $outputCsvPath"
